@@ -49,10 +49,11 @@ function onloadMore() {
   serviceImages(searchQuery, page)
     .then(data => {
         refs.list.insertAdjacentHTML('beforeend', createMarkup(data));
-        console.log(data);
+        
 
         if (data.totalHits / imgPerPage <= page) {
             Notify.info("We're sorry, but you've reached the end of search results.");
+            console.log(refs.btnLoadMore);
             refs.btnLoadMore.classList.add('hidden');
       }
     })
