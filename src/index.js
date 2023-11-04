@@ -3,7 +3,8 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-console.log(serviceImages());
+let page = 1;
+let searchQuery = '';
 
 const refs = {
   form: document.querySelector('.search-form'),
@@ -11,15 +12,15 @@ const refs = {
   btnLoadMore: document.querySelector('.load-more'),
 };
 
-
 refs.btnLoadMore.classList.add('hidden');
+
 
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
 
-console.log(refs.form);
+
 
 refs.form.addEventListener('submit', onSubmit);
 refs.btnLoadMore.addEventListener('click', onloadMore);
@@ -28,7 +29,7 @@ function onSubmit(evt) {
   evt.preventDefault();
   page = 1;
   refs.list.innerHTML = '';
-    searchQuery = evt.currentTarget.elements.searchQuery.value;
+  searchQuery = evt.currentTarget.elements.searchQuery.value;
   
   serviceImages(searchQuery, page)
       .then(response => {
@@ -37,8 +38,7 @@ function onSubmit(evt) {
         Notify.failure('Sorry, there are no images. Please try again');
       }
 
-            const el = response.hits;
-          console.log(response);
+       const el = response.hits;
       return createMarkup(response);
     })
     .catch(err => console.log(err));
@@ -53,7 +53,6 @@ function onloadMore() {
 
         if (data.totalHits / imgPerPage <= page) {
             Notify.info("We're sorry, but you've reached the end of search results.");
-            console.log(refs.btnLoadMore);
             refs.btnLoadMore.classList.add('hidden');
       }
     })
@@ -61,7 +60,6 @@ function onloadMore() {
 }
 
 function createMarkup(array) {
-    console.log(array.hits);
   const resp = array.hits
     .map(data => {
       const {
@@ -78,16 +76,16 @@ function createMarkup(array) {
       <img src="${webformatURL}" alt="${tags}" loading="lazy" width="300" height="200" />
       <div class="info">
         <p class="info-item">
-          <b>Likes: </b><span class="numbers">${likes}</span>
+          <b>Likes: </b>${likes}
         </p>
         <p class="info-item">
-          <b>Views: </b><span class="numbers">${views}</span>
+          <b>Views: </b>${views}
         </p>
         <p class="info-item">
-          <b>Comments: </b><span class="numbers">${comments}</span>
+          <b>Comments: </b>${comments}
         </p>
         <p class="info-item">
-          <b>Downloads: </b><span class="numbers">${downloads}</span>
+          <b>Downloads: </b>${downloads}
         </p>
       </div>
       </a>

@@ -15,7 +15,6 @@ async function serviceImages(searchQuery, page) {
     },
   });
     imgPerPage = resp.config.params.per_page;
-    console.log(resp.data);
   return resp.data;
 }
 
