@@ -12,7 +12,7 @@ const refs = {
   btnLoadMore: document.querySelector('.load-more'),
 };
 
-refs.btnLoadMore.classList.add('hidden');
+refs.btnLoadMore.classList.toggle('hidden');
 
 
 const lightbox = new SimpleLightbox('.gallery a', {
@@ -33,12 +33,10 @@ function onSubmit(evt) {
   
   serviceImages(searchQuery, page)
       .then(response => {
-        console.log(response);
       if (response.total === 0) {
         Notify.failure('Sorry, there are no images. Please try again');
+        refs.btnLoadMore.classList.add('hidden');
       }
-
-       const el = response.hits;
       return createMarkup(response);
     })
     .catch(err => console.log(err));
@@ -48,12 +46,9 @@ function onloadMore() {
   page += 1;
   serviceImages(searchQuery, page)
     .then(data => {
-        refs.list.insertAdjacentHTML('beforeend', createMarkup(data));
-        
-
+         createMarkup(data);
         if (data.totalHits / imgPerPage <= page) {
             Notify.info("We're sorry, but you've reached the end of search results.");
-            refs.btnLoadMore.classList.add('hidden');
       }
     })
     .catch(err => console.log(err));
