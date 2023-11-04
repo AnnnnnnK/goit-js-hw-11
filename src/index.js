@@ -36,6 +36,8 @@ function onSubmit(evt) {
       if (response.total === 0) {
         Notify.failure('Sorry, there are no images. Please try again');
         refs.btnLoadMore.classList.add('hidden');
+      } else if (response.total > 0) {
+        Notify.success(`Hooray! We found ${response.totalHits} images.`);
       }
       return createMarkup(response);
     })
@@ -48,7 +50,8 @@ function onloadMore() {
     .then(data => {
          createMarkup(data);
         if (data.totalHits / imgPerPage <= page) {
-            Notify.info("We're sorry, but you've reached the end of search results.");
+          Notify.info("We're sorry, but you've reached the end of search results.");
+          // refs.btnLoadMore.classList.remove('hidden');
       }
     })
     .catch(err => console.log(err));
@@ -90,10 +93,7 @@ function createMarkup(array) {
     .join('');
 
     refs.list.insertAdjacentHTML('beforeend', resp);
-  
-    lightbox.refresh();
-    if (array.totalHits > imgPerPage) {
-    Notify.success(`Hooray! We found ${array.totalHits} images.`);
     refs.btnLoadMore.classList.remove('hidden');
-  }
+  
+  lightbox.refresh();
 }
