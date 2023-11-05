@@ -12,9 +12,7 @@ const refs = {
   btnLoadMore: document.querySelector('.load-more'),
 };
 
-// refs.btnLoadMore.classList.add('hidden');
-// elements.btnLoad.classList.replace('load-more', 'hidden');
-
+// refs.btnLoadMore.classList.toggle('hidden')
 
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
@@ -28,6 +26,7 @@ refs.btnLoadMore.addEventListener('click', onloadMore);
 
 function onSubmit(evt) {
   evt.preventDefault();
+  refs.btnLoadMore.classList.add('hidden')
   page = 1;
   refs.list.innerHTML = '';
   searchQuery = evt.currentTarget.elements.searchQuery.value;
@@ -36,11 +35,14 @@ function onSubmit(evt) {
       .then(response => {
       if (response.total === 0) {
         Notify.failure('Sorry, there are no images. Please try again');
-        // refs.btnLoadMore.classList.remove('hidden');
+        refs.btnLoadMore.classList.add('hidden');
+        return;
       } else if (response.total > 0) {
         Notify.success(`Hooray! We found ${response.totalHits} images.`);
       }
-      return createMarkup(response);
+      const res = createMarkup(response);
+      // refs.btnLoadMore.classList.remove('hidden');
+      return res;
     })
     .catch(err => console.log(err));
 }
@@ -51,9 +53,7 @@ function onloadMore() {
     .then(data => {
          createMarkup(data);
         if (data.totalHits / imgPerPage <= page) {
-          refs.btnLoadMore.classList.add('hidden');
           Notify.info("We're sorry, but you've reached the end of search results.");
-          // elements.btnLoad.classList.replace('load-more-hidden', 'load-more');
       }
     })
     .catch(err => console.log(err));
@@ -95,13 +95,6 @@ function createMarkup(array) {
     .join('');
 
     refs.list.insertAdjacentHTML('beforeend', resp);
-  // refs.btnLoadMore.classList.remove('hidden');
-  //  if (data.totalHits / imgPerPage <= page) {
-    //     }
-    // if (data.total > 0) {
-    //     refs.btnLoadMore.classList.add('hidden');
-    //   }
-  // refs.btnLoad.classList.replace('hidden', 'load-more');
-  
-  lightbox.refresh();
+    refs.btnLoadMore.classList.remove('hidden');
+    lightbox.refresh();
 }
